@@ -134,6 +134,12 @@
           "default": 0.8,
           "description": "Controls image output size",
           "order": 4
+        },
+        "wolfram.notebook.rendering.forceInputForm": {
+          "type": "boolean",
+          "default": false,
+          "description": "When enabled, expressions will be displayed as InputForm text instead of rendered images",
+          "order": 5
         }
       }
     },

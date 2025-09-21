@@ -102,7 +102,8 @@ $config=<|
   "htmlMemoryLimit"-><|"value"->200(*MB*),"requires"->(Head[#]===Integer&&#>0&)|>,
   "imageWithTransparency"-><|"value"-> False,"requires"->(#===True||#===False&)|>,
   "renderAsImages"-><|"value"->True,"requires"->(#===True||#===False&)|>,
-  "invertBrightnessInDarkThemes"-><|"value"->True,"requires"->(#===True||#===False&)|>
+  "invertBrightnessInDarkThemes"-><|"value"->True,"requires"->(#===True||#===False&)|>,
+  "forceInputForm"-><|"value"->False,"requires"->(#===True||#===False&)|>
 |>;
 
 
@@ -188,6 +189,12 @@ readMessage[timeout_:1.0]:=Module[{ready=SocketReadyQ[$zmqserver,timeout]},If[re
 			(* pattern objects *)
 			pObjects
 		}, 
+
+		(* if forceInputForm is enabled, always use text format *)
+		If[
+			TrueQ@$getKernelConfig["forceInputForm"],
+			Return[True];
+		];
 
 		(* if we cannot use the frontend, use text *)
 		If[
@@ -356,7 +363,7 @@ handleOutput[]:=
         text = 
         If[
           textQ[output["outputExpr"]], 
-          Replace[output["outputExpr"],ExpressionHeader[expr_]:>ToString[Unevaluated[expr], OutputForm]], 
+          Replace[output["outputExpr"],ExpressionHeader[expr_]:>ToString[Unevaluated[expr], If[TrueQ@$getKernelConfig["forceInputForm"], InputForm, OutputForm]]], 
           (* else *)
           "None"
         ];
